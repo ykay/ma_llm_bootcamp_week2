@@ -6,4 +6,5 @@ The Jupyter Notebook demonstrates a basic LlamaIndex workflow
 3. Querying
 
 # Setup
-Put any supported data files (e.g., PDF, image, word doc) into a `data/` folder and set the query string to anything you'd like to ask regarding the ingested data.
+1. Create an `.env` file with `OPENAI_API_KEY`.
+2. Put any supported data files (e.g., PDF, image, word doc) into a `data/` folder and set the query string to anything you'd like to ask regarding the ingested data.

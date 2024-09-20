@@ -1,0 +1,2160 @@
+0:01
+and then I'm going to share my
+0:07
+screen got the screen here going and then I'm GNA pull up the chat window okay so I got the chat
+0:16
+open um okay so um hey let's let's everyone can we warm up the chat just
+0:21
+say hey in the chat I just want to make sure that you have your chat um up and going you know it's it's tough to it can
+0:27
+be tough to run these like Zoom classes because he get like a ton of proud feedback so it's like uh I'm rely on you
+0:34
+to be chatting things uh in here um so the the thing I want to jump into is
+0:41
+like we warmed up with the pre-work and I'm curious you know what um people's
+0:47
+observations and takeaways were so um I'm going to start to review some of
+0:53
+them I I I was hoping that you took away from that experience and then um throw
+0:59
+in the chat anything extra or if you're agreeing with what I'm saying was surprising you know go ahead and talk
+1:04
+about that too so one thing that I didn't know when I first got it started I didn't quite understand the degree to
+1:09
+which llms were stateless so one thing that was surprising to me was that if I'm having
+1:15
+a chat with an llm you're literally for every new chat message you send along
+1:20
+the entire chat history with every single mes to the llm so that was a
+1:26
+little bit surprising to me um I hope you you understood or realize that was happen happening um and so yeah there's
+1:33
+there's zero memory zero memory uh and not only that but it's very
+1:41
+parallelizable compared to like a web a web server like a web server the way it works is if a web server is starting to
+1:48
+get bogged down then you're G to have some requests come fast some will get stalled for uh seconds it's it's very
+1:55
+asymmetrical or can be very asymmetrical for llm serving um in a good way it was it degraded it
+2:02
+degrades really really well um in the sense that even the Run pod that you
+2:08
+were using which is not that beefy of a machine it was capable of serving 30 people hammering your chain lit at the
+2:15
+same time and it would have a reasonable tokens per second rate so that little piece of intuition was interesting to me
+2:21
+and it was a little bit surprising to me so I ran some like performance tests where I would hammer it with requests
+2:27
+and you could see that it just really kind of like the uh the tokens per second just starts to slide down for all
+2:34
+requests in almost like a linear way for um you know as more people piled onto
+2:40
+the server so that was that was kind of interesting um one thing I think you probably already knew was that uh it's
+2:47
+fairly easy to stream from an llm llms are slow or they can be slow but also
+2:52
+you know you you get the characters one at a time and so that was that's not too bad um one thing that you're going to
+2:58
+get more appreciation for is that there's kind of like two aspects to the llm there's the the llm that's actually
+3:05
+doing the prediction so that's running the math which we're going to be talking about later today some magic math that's
+3:11
+taking your input characters and then generating a response so that thing which is called inference is happening
+3:18
+and then people surround it with or front it with a web server um so that was um interesting to
+3:26
+me that basically for your AI Solutions you'll probably always be interacting
+3:32
+with it through web you will not likely be you know directly you know in your
+3:38
+code running running any kind of like inference um and one thing is that for
+3:46
+that web server they standardize around open AI so they use open AI for two things one
+3:52
+the open AI rest API or streaming API uh many people who build for this they just
+3:59
+use the same end points so you can just swap out the clients super easily uh and they've also Consolidated
+4:07
+around how we're going to organize messages in this concept of role and
+4:13
+content um although under the hood the llm actually is open to a lot of
+4:19
+different types of structure as long as it's well organized right it's a it's it
+4:25
+it doesn't you know it's not like an API where it literally needs that exact you know format although through the web API
+4:32
+they do enforce that schema um so I'm going to check in with everyone here I guess like I'm
+4:39
+continuing to watch the chat and I'm looking for basically you know as I'm kind of going over some of the things
+4:45
+that kind of like surprise me you know anything else that caught you or anything else that any other aha moments
+4:50
+that you had while while doing that um temperature I'm I'm curious you may have already been playing with that right so
+4:57
+uh I think one intuition I was hoping you would leave here with was um as you were you know playing with
+5:06
+2.3.5 7 right because when you're we're using chat gbt I think you you rarely tune the
+5:12
+temperature um but you know that's something that now I think you'll be more actively dialing uh because you'll
+5:19
+want different temperatures for different solutions and
+5:25
+then I think the last thing that I spent a lot of time trying to understand early on was the vast number of serving
+5:33
+options when it comes to GPU rentals and the conclusion that I kind
+5:42
+of came to was essentially you know you had you have like your major two
+5:49
+providers which are open Ai and anthropic those are the those are the two kind of leading private models and
+5:55
+they have their apis but then you have a whole host of providers in the
+6:01
+middle that's companies like grock any scale but there's actually tons the
+6:08
+thing that I realized there is they provide hosting and actually cheap
+6:14
+hosting right now there's actually like a a crashing in the prices everyone's cutting their API prices which is
+6:20
+awesome for us it's both getting faster and I think it's going to continue to get faster and prices is going to come
+6:25
+down but they only will run one of a
+6:31
+certain number of common models and so if you're happy with that
+6:38
+that's great and you can use a lot of those providers but once you the moment that you need to
+6:45
+F tune or run a model that they don't support then you need your own
+6:50
+GPU and gpus I'm starting to understand are very expensive to rent if you're if
+6:56
+they're dedicated because if it's a fine-tune model all those parameters have to be loaded in memory and so
+7:02
+unlike a web server it's very hard to share resources you're entirely consuming the ram of that
+7:08
+GPU and so you have to pay the bill for it which the reason I was pushing us
+7:14
+towards runpod and vast is AWS Google Microsoft their gpus are extraordinarily
+7:22
+expensive um and so $4 an hour $8 an hour you know uh things that were just
+7:28
+are just insane for like a hob certainly for hobbyist scale and runp pod being
+7:33
+like the only serverless option that will allow you to use a custom fine-tune
+7:40
+model so let me just see here what um uh what people's other people's takeaway is
+7:46
+uh did anyone play with AMA I sent out that link earlier I'm not sure it was kind of a last minute but it was it's
+7:51
+such a quick install that I'm curious if anyone um did that so nickrod um we're
+7:59
+not yet seeing any Divergence great question so that hasn't happened yet in terms of API for uh for function calling
+8:07
+that's a that's a great question um um Okay cool so this is our warm-up
+8:14
+so we wanted to hit the ground running and um you know get your get your hands
+8:20
+dirty and so let's let's get into it so we have three major goals for the class
+8:27
+so the first goal is I think that you know if you're paying attention in the
+8:33
+space you have probably heard a lot of vocabulary words floating around you've heard people are already talking about
+8:39
+the chat with about rag I'm sure you've heard you may have heard rag you may have heard embeddings Vector stores
+8:44
+fine-tuning U prammer efficient fine tuning Laura quantization um so one cool thing is
+8:50
+that at the end of the six weeks every word like most words 95% of
+8:57
+words that you hear floating around you'll be like I know exactly what they're talking about I know exactly what they're talking about and you've
+9:03
+had some practical experience with them and you've had some valuable intuition uh around it uh which brings me to the
+9:10
+second point right our goal most of us are just kind of like um you know regular Engineers right so very few of
+9:17
+us have an AI or ml background so the thing that we want to do kind of like
+9:22
+what Willie was mentioning earlier was gosh when it comes to building U backend
+9:28
+systems or front end systems or mobile apps I have a lot of intuition I have a lot of intuition for what's easy what's
+9:33
+hard what challenges may arise and then one of my goals for this class for you
+9:38
+is to give you that same intuition for this space like if someone pitches you an idea oh I I'm super excited about
+9:45
+this like healthcare AI solution you can shake your head be like oh my God that's going to take like five years and you
+9:51
+know millions of dollars to build or you're going to be able to say oh yeah two weekends I can have a prototype but
+9:57
+then here are kind of where it's going to fall down I want you to have certain intuitions like I think you already know
+10:04
+that there is a typical set of model sizes you have something in the range of
+10:09
+400 500 million you know parameters you have things in the order of like 40 million parameters you have things in
+10:14
+the order of like 7 million parameters 1 million parameters 500,000 parameters and you probably know that um with
+10:22
+greater number of parameters comes greater capability and greater Fidelity
+10:28
+but what you don't know intuitively yet Perhaps is how much greater what's the
+10:34
+line what does it look like when the behavior starts to like a degrade um you
+10:40
+know what types of tasks can I use for different size models what is the impact of quantization on on that quantization
+10:47
+is where you take these like 16 bit numbers and you say Let me let me kind of like round it for lack of a better
+10:52
+word to eight bits or four bits or even two bits you know how is that going to change like the model Model Behavior
+11:00
+what is the cost what is the cost implications of using different model sizes um what is the throughput
+11:07
+expectations um so when you're doing function calling when you're doing agents so everyone's talking about
+11:13
+agents agentic programming we're g we're gonna learn all about agents right um but you're going to find out pretty
+11:19
+quickly working with agents man when they work so cool it's so sci-fi the age
+11:26
+that we're in is ridiculous I cannot believe it right I mean this is this to me has been such an exciting time but at
+11:32
+the same time you're going to quickly see how how hard agents fall on their face and so you're going to you're going
+11:39
+to begin to explore okay well I'm starting to understand where they are now and these are kind of how I'm going
+11:45
+to amarate you know their their shortcomings right so um and then the
+11:53
+the final thing is you know I've always love codepath um students by the way the
+11:59
+brand for this uh you know codepath is kind of our University brand this is Max Academy as we go to the max max Academy
+12:06
+is what you're part of now uh but it's the same Vibe so basically I love the
+12:12
+original folks in codepath because you know you're so curious and you're passionate about this like
+12:17
+self-development and you want to do things hardcore right and so it was always cool
+12:23
+to come together with this group and and have super high expectations and and um
+12:31
+you know just be very very curious you know so many of you have jobs that I know are high press like no one in
+12:36
+Silicon Valley I've ever met has been like oh yeah I'm just chilling everyone's like man I'm slammed at work
+12:43
+a lot of people have kids you know so I think that this space was kind of a
+12:48
+place where like okay let's pull off our Band-Aid let's focus for six hours uh
+12:53
+for six weekends and then we will acquire this knowledge that has been in the air now for a year let's get it now
+13:01
+let's put it in our brains and then let's choose what we want to do with it right because you also know um that so
+13:08
+um our policies uh will stay the same when it comes to course policies so our course policies is that this is this is
+13:15
+for the non- Rippling folks right so we have a couple Rippling folks auditing and and you're and this is not going to apply to you but for the rest of you
+13:22
+it's um mandatory attendance for the six sessions just six sessions right it's going to be six quick two-hour sessions
+13:29
+you're going to be loaded with knowledge um and abilities so six six sessions you can use excused absences though right so
+13:36
+if you if you email me and say hey I can't attend no I'll say no problem at all watch a recorded video I'll note it
+13:42
+down but if you ghost then you're out you know so if you g to session you're out if you don't turn in one of the
+13:49
+weekly assignments um by uh by Sunday at midnight then you're also out um and
+13:56
+I'll just remind you why we did this because we've tested this I've tested this like approximately one trillion times all different ways because it's
+14:02
+actually exhausting to maintain the standard um and Chase everyone down and kind of like have the talk and all this
+14:08
+other stuff but what would happen is when we didn't have that you're really well intentioned I hope you're excited
+14:14
+today I'm very excited what happens is work deadline did whatever whatever life
+14:21
+something uh and you I can't I can't I just can't can't do it this week uh and
+14:27
+you don't turn in the project you don't show up and then I'll I'll let you guess how many people come back once they drop
+14:33
+off it's a very small number so once you're gone I typically never see you
+14:39
+again and so um basically we have these rules because it creates a little bit of
+14:44
+a forcing function to stay with it and also be surrounded by a group of people that are as intense and are as serious
+14:51
+to get this kind of knowledge and and have some fun with this in this time period so um sorry for springing this on
+14:59
+you for the non code paths I know that because it's it's like I think 90% excode path here and just a few few
+15:05
+guests and then again this does not apply to the Rippling folks you guys are welcome to audit this and I think you'll get a lot out of um the the the labs
+15:12
+that we have uh each week um so that's my goal is that uh let me know in the
+15:17
+chat does that match with your goal are we down is this exciting yes or
+15:27
+no all right all right so um we are going to approach this at
+15:35
+two different altitudes so I'm going to first give you an overview of um llm
+15:42
+solution design what you're going to find is we're going to talk we're going to discuss in later in the session about a lot of different llm ideas uh llm app
+15:50
+ideas and the reason why is again it's that intuition building I want you to get a sense for like a lot of different
+15:55
+things that people might be building both consumer facing and Enterprise only like LM but like no backend no no like
+16:01
+consumer endpoint which is which is the those are the LM solutions that are taking off right now by the way so not
+16:07
+not a lot of the consumer facing ones are right now um so we're gonna we're going to talk about like at the end of
+16:12
+the day and I'll unpack for you in this demo how uh similar a lot of the design
+16:18
+patterns are for a wide range of problems um then we're going to go and
+16:23
+we're gonna actually take a step back and we're g to look into the black box of this magical text completion or image
+16:30
+completion blackbox um now you don't need to know
+16:36
+it I'll be honest right to build LM Solutions you can treat it like a blackbox like fairly well and be
+16:43
+ignorant of it and you'd be pretty safe um and and you may have a range of interest in it I just think it's useful
+16:49
+to kind of like understand one abstraction below where you're actually going to be playing Just so you have a
+16:55
+little bit of that Insight but um so there'll be a section here where may lose some of you I don't know some of
+17:00
+you may stick with me some of you may fade out a little bit that's okay um you don't need it to do AI Solutions but we
+17:06
+will discuss a bit of the underpinnings of of that and it will help you understand embedding models um as well
+17:13
+as fine-tuning when we get to those units um then we're g to dive in I think
+17:19
+I'm G to shoot for at uh 6m Pacific uh I'll I'll try to make that if early if I
+17:25
+can we're going to do a lab and so um we are going to work on our first subject
+17:30
+which is evaluation evaluation is incredibly important topic in AI if you've done even a little of AI you know
+17:38
+that gosh you can make magic happen um you can make an 80% solution in like
+17:45
+three hours of fiddling with prompts and just kind of like experimenting and you're like oh my gosh what it can do in
+17:51
+just a few hours is incredible but then you're G to get smacked in the face with
+17:57
+AI because getting it above 80% um you know satisfaction rate is
+18:03
+extraordinarily hard and so the realities of bringing a solution to
+18:09
+production is actually very very difficult and because AI is it's just intrinsically more unstructured than the
+18:16
+systems that you're used to designing and so you know what what we need to do in order to kind of prepare for that is
+18:22
+we want to start with evaluation from from day one so it's just the same as creating an integrated test plan for
+18:29
+your web app but it's just way more essential to be test driven in terms of development than it is for web because
+18:36
+we hey we can all cowboy code a little bit and and avoid test driven development actually will probably be okay a lot of a lot of times but not
+18:43
+with AI because with AI you're GNA fiddle with your prompt and then you're going to go from 80 to 85% which is
+18:50
+great but then you'll fiddle with the prop some more and then it's going to drop down to 8 you know it'll drop down
+18:55
+to 83% so you're gonna start to play um where oh let me let me try another
+19:01
+model let me try Okay M draw is kind of uh failing for me let me let me switch to llama or let me switch to you know
+19:06
+quen or something and and then you're just gonna not you're not going to know where you
+19:12
+improved things and where you failed them so we're going to play with how to
+19:18
+actually build an evaluation system for your AI Solutions and then we'll kind of wrap up
+19:23
+with um what the next steps are for the weekly project there will be a Capstone um as well so you have both weekly
+19:30
+projects that are these more structured um projects and then alongside of it
+19:36
+you're going to start to build your Capstone unlike uh
+19:41
+traditional codepath you'll have your choice of doing an individual Capstone or group project Capstone so yeah pick
+19:47
+your flavor you know there's pros and cons to both routes you know with groups more coordination you know um you know
+19:54
+more complexity more people we all work with people all day maybe we're sick of working with people I don't know um but
+20:00
+then also a lot of cath people man they've stayed in touch for years um and
+20:05
+there's something cool about that building something neat on the side with with other people um so that'll be your
+20:13
+choice okay um so that's the rough Arc that's that's what the next 30 minutes
+20:18
+or so um at least for the lecture part are going to bring so let's start to unpack an llm solution so uh this these
+20:27
+are the five steps um to building any solution so you'll follow this workflow no matter
+20:34
+what app you're interested in building um the first one I won't dwell on too much so what I'm G to do is
+20:41
+actually like I'm gonna demonstrate this so I'm going to demonstrate this workflow instead of just talking about it uh let me tell you about the app that
+20:48
+we that I'm working on I'm really just getting it off the ground this a approvable concept right now um but at
+20:54
+codepath we we taught 177,000 students this year which is crazy
+20:59
+uh when I first started we only teaching a few hundred and it it's just grown and grown and grown and of course when
+21:05
+you're teaching that many students you're thinking about how to leverage Ai and we still teach them how to grind
+21:11
+leak code because that's still how you know some companies interview um and so uh we are building
+21:18
+an AI leak code uh companion so that's the mission and we
+21:24
+wanted to follow our pedagogical standards um and our coaching standards in our in our kind of like
+21:30
+workflow and we also want it to um do some extras we want it to be more
+21:35
+context aware of the student so we want it to be more like a real tutor now I don't really believe that AI tutoring is
+21:41
+going to replace tutoring but I think it basically it's going to be three entities it's gonna be the student the
+21:47
+human ta and then the AI tutor so they will work in concert with each
+21:52
+other um and but that also means I do want the AI tutor my AI tutor to be a
+21:58
+little bit more aware of who they are as students so just as I've gotten to know many of you over the years and you know
+22:05
+as I start to build a mental map for you I can kind of like go to where you are right so um I want this AI tutor to be
+22:12
+doing live assessments of the student at all times not quizzing them but just
+22:17
+like filing little pieces of information away as they're kind of demonstrating Mastery through the questions they're
+22:22
+asking me like okay this person's like I can clearly tell they've already like they're already at this level here so
+22:28
+let me kind of like dial up where I am to here or I can clearly tell they're they're not let me kind of like dial up
+22:33
+back so I want real time live assessments um to dial uh how they're
+22:38
+going to interact I want uh that to be done in a recordkeeping form so I want at the back
+22:45
+end to be looking at a knowledge graph of all my students so I can get a sense for where people are struggling where
+22:51
+they're like you know uh where they you know the bulk of the student body is um I want the student not to feel
+23:00
+like they're interacting with AI so obviously I'm not gonna we're not trying to trick them with that AI but I want them to you know understand that a human
+23:07
+is only one step away so uh I want the AI to understand when to flag and create
+23:13
+alerts that a human tutor or teacher should um intervene with the
+23:19
+student okay so that's the that's the general scope of the AI solution let me
+23:24
+let me kind of outline like how I I'm following these steps to build this
+23:30
+solution um so I'm going to start off with sorry let me arrange my screen a
+23:37
+little bit okay put your faces over there get
+23:42
+my chat back up over here okay and by the way feel free to chatter at me you
+23:48
+know make comments you can do peanut gallery stuff you know talk to each other you know um uh it helps it helps
+23:55
+me understand whether whether what I'm saying is is interesting or resonating or if I'm just kind of running a podcast
+24:01
+it's it's it's uh gives it's helpful for me to get feedback so um definitely pipe
+24:07
+up in there thanks Willie I appreciate the support um okay so let's see here
+24:16
+let me look at what I'm pointing at I'm just gonna make sure okay I got that
+24:21
+demo going for you in a second this will go um send need to create
+24:29
+exit full screen press and hold Escape okay all right Local
+24:38
+Host okay all right so the first
+24:43
+exercise which you've already done H
+24:56
+interesting sorry there's the there's a line of code missing it let's
+25:01
+right how' that happen
+25:09
+weird okay so um the first thing that I want to do is I just I did I just did
+25:16
+what you did with the pre-work which is I I just brought it into the system so I said you know can you explain you know I
+25:23
+don't know tles to me and
+25:29
+so the kind of behavior of a lot of these Bots is they've been they've been
+25:34
+tuned and trained to oh am I not Santiago are you seeing my screen
+25:41
+now we can we can see it yeah oh click on the tab by the way uh there's like
+25:46
+Zoom has this new feature where you can click on faces or the screen is that what the issue was
+25:52
+perhaps yeah so you know if I'm looking at you know chat jbt then and if I'm
+25:59
+saying explained you know recursion to me Pyon you imagine a student especially a
+26:06
+freshman coming to me and a answering the question and this this is my tale imagine imagine this is what your your
+26:14
+freshman is is seeing I'm like no this is this is terrible this is never how I would answer this
+26:20
+question um and then let's say that uh the student is coming to me and they
+26:27
+have a question about leak code and they want me
+26:34
+to they want me to uh help them and I say okay what problem are you working on
+26:42
+um and it's this so I'm G to paste that into
+26:47
+chat jbt as well all right so this is the Baseline
+26:54
+um pretty undesirable so I don't I don't want not only does it have none of it doesn't
+26:59
+have any of the fancy features that I that I describe but pedagogically this is not the experience that I want for
+27:05
+for students so um next what I'll do is uh
+27:11
+I'll come in here and I'll design this prompt and so I'm going to describe you know um a a a character
+27:18
+right I'm going to talk to them a lot about this so let me talk to you about prompts I I know that you have been doing prompts lightly or or medium at
+27:25
+least in in your life and you probably already know know that PRS is a huge tool I would suspect
+27:33
+that many of you are still kind of tip of top of the iceberg when it comes to prompt
+27:39
+potential um and I would also uh say that there's a lot of amazing prompt
+27:44
+generators that can help you expand a prompt but like a prompt for you that is
+27:49
+in your system is probably GNA be like a page or even two pages long um to really
+27:56
+kind of start to tune the behavior that you want especially if you may know the word like a few shot prompt or a one
+28:03
+shot prompt which is a prompt that has embedded examples of the interaction that you want to see which greatly uh
+28:09
+lifts the Fidelity of the behavior all right so I've added the prompt here and
+28:15
+now I'll come back here uh and I will say for the
+28:20
+app let's let's use this prompt um the
+28:28
+prompt is just glued into the context with open AI they have a slight
+28:34
+modifications which is like you tag it as a system role what's the difference of that well they used extensive
+28:41
+fine-tuning to shift the behavior of the thing to more more deeply emphasize the
+28:47
+system prompt and it's a fine-tuning behavior and we're going to learn a little bit about how they accomplish that through through fine tuning and how
+28:53
+you could do something similar but but mostly it's just gluing that text into to all of your all of your
+29:00
+responses so great question prianka what is a prompt a prompt is just a word that we use because to the llm it's no
+29:08
+different from the user's input um semantically all it is
+29:13
+is it's it's part of kind of how the llm
+29:19
+is doing its text completion so if you te it up like this it's like the LM is
+29:27
+really great improv and it will respect or it will it
+29:33
+will just play this game with you and so if you say you know imagine that you're an alien and blah blah blah like as you
+29:40
+know from playing with it and fiddling around with it like it'll respect that so a prompt is simply an input into the
+29:46
+llm but all text is just an input into the llm and a prompt has been um uh the
+29:52
+LM has been trained to kind of be really compliant with that prompt
+29:59
+um okay so I've turned I've turned the prompt on which is again is just is just being glued into in in with my
+30:05
+message and then I'll let me let me try that again and I'll paste in the chat and
+30:14
+then you can see this is a lot closer to how I want the llm to behave now um I
+30:20
+could continue to test this further and you could you could you could see it it actually works decently well where it's
+30:26
+not going to get it's going to me little driblets of hints um in order to kind of like
+30:32
+hopefully unblock me you know through solving this problem so um okay so that was phase one prompt
+30:41
+design and then we'll pair it uh we'll pair that with um with evaluation as
+30:48
+well a little bit later okay so the next thing I want to do in Solutions is check
+30:54
+this out I want to say when is the project do so if you look at what it's saying
+31:02
+here prompts LMS um as we know they're trapped in this glass
+31:08
+box can't feed stuff into them can't they can't reach the outside world right
+31:14
+they are just this um this thing that's that's generating text so how you're
+31:19
+going to very quickly run into issue where it's like no I want to like loaded up with different things right so the
+31:25
+technique for that is called rag ret retrieval augmented generation it's a fancy sounding word it's a very simple
+31:32
+concept you're going to you're go you're going to retrieve stuff and um uh so in this case I'm
+31:40
+gonna I'm going to go and I'm going to retrieve the student context and the class con
+31:47
+context um and then so I'll come back here and I'll say when is the project
+32:00
+um and you can see that now it it knows when the project is due right so the the
+32:07
+thing that we're going to learn next week and some of you have mentioned that you're playing with rag as well although I will say that rag is a very deep
+32:14
+concept because there's not a singular solution for it you generally have to go
+32:20
+and use a lot of a family of techniques in order to bring the relevant context
+32:27
+to your your situation whether it's something like hey I want to be able to implement
+32:33
+semantic email search which is an ability to talk to your email hey uh I'm
+32:40
+gonna call out Santiago because he was just talking a minute ago it's like oh yeah when was the last time I when was
+32:45
+the last time I chatted with Santiago again what was the last email exchange that we had I want to be able to say that and that's an example of a semantic
+32:52
+search because they had it it you know it will uh have an understanding perhaps of like which Santiago I'm talking about
+33:00
+you know because maybe they'll see that um uh I have it in my calendar
+33:05
+system and um and and it's going to like look up the correct one right so um this
+33:12
+process is called is calls rag we're going to use embeddings we're also we're also going to fuse it with traditional
+33:19
+search and we're also going to use uh ranking techniques to go and you know
+33:24
+figure out like well which of these is the most relevant
+33:29
+um so uh when it comes to fetching things and then jamming it in to the
+33:35
+context um you see here if I have the class
+33:41
+context uh flagged then you just glue it into the prompt so the prompt and and
+33:47
+and the context sorry I me I know I'm mingling words together but at the end of the day we we name it context we name
+33:54
+it prompt we name it but all the lmc's is a huge block text it's all glued
+33:59
+together in it so uh it's just injected in it as a string so that's that's how
+34:06
+it's that's how that context is is put into llm and once it's in there the llm it just received the whole blob right
+34:13
+it's just the blob of text um that it gets do you like tell the llm like this
+34:20
+is your context or do you have to like change it to be the like you're just like you can pull from this like you you
+34:26
+need to instruct it in that way right do you do but like um but it's it's you're
+34:31
+you you give it instructions like that because you you you DeMark things in there but it's as if you're talking to a
+34:38
+person it's it's you're helping it find you're helping it solve your your problems like for example a lot of
+34:45
+people realize that hey if I have like if I put like starting and closing XML
+34:50
+tags uh and that in the thing it'll help it process there because one of the cool
+34:56
+things that has involved in the last few months is prompts the context can be enormous these days you can put a huge
+35:02
+volume of things but the problem with that is uh um well what is the what is
+35:08
+the LM going to emphasize because what if you had a 100 directions in their 100
+35:14
+commands like what is it going to like emphasize um and so and and and so giving it instructions like hey this
+35:21
+block of text that follows is you know the thing I want you to look through for the answer to this question and then
+35:28
+your question so my question is this look at the section above marked by this
+35:33
+tag so it's it's just a way for you to interact with the neural network to help
+35:39
+it process a large body of text um and um do we think about props
+35:45
+differ traditional search and indexing limited text we provide uh let's see I'm not sure about that do we think about
+35:50
+props differently the traditional search I mean yes in the sense that you know we
+35:57
+we would will we we choose what to inject into that big block of text so it
+36:03
+doesn't have access to search so we will in our regular code go out and make a
+36:08
+search call but like how many pages should we visit should we visit five pages 10 pages 500 pages in Google right
+36:17
+um one of the things that you'll find is GPT is not that great at research because it it will only research like
+36:22
+the top X pages in Google and fetch that and then inject and then it will decide what to inject into the
+36:29
+context um so I'm GNA postpone Nick Rod has a really interesting question but I'm GNA I'm GNA uh kick that question
+36:36
+down the road uh because I know that we're going to hit it too uh next week in great detail um okay so uh I now want to do
+36:48
+step three so like what I mean by that is okay I've now now this thing is is it's complying the way that I wanted to
+36:54
+comply it is now aware of the Contex but I want to bring in that use case where
+36:59
+it starts to ass the student right and then so you could you could go
+37:08
+to this prompt and give it additional instructions around how I want it to
+37:14
+assess the student like here is here is the um the chunk of code not code the
+37:20
+chunk of text that I have to try to like have it process what the student's knowledge is right and like like as wiie
+37:27
+was was pointing out like look at the way I'm doing this there's nothing special about this right this is just my
+37:33
+human way of organizing things which is like hey the student last message is this you here's the context of our whole
+37:39
+conversation you know here's what you've already flagged here's what you think that you already know do you want to add
+37:46
+an alert or do you want to add a piece of knowledge right so I could have I could have added that to the original I
+37:52
+could have added that to the original prompt and put it all I said it could have sent it all in together but
+37:58
+um what happens is the larger these prompts go remember that 80% rate things
+38:03
+that working 80% are now like 75% or
+38:09
+70% llms and you're going to thr this through experimentation there's a limit
+38:14
+to what they will like when your instructions are small and
+38:19
+simple um you know it can follow them with a much higher degree of
+38:24
+fidelity so uh what is your role or what is your job as an AI coder with these
+38:31
+Solutions um it's really not a ton of
+38:36
+coding um it is the coding that you do
+38:41
+is is 80% just shuffling things from prompt to
+38:49
+prompt so you have you're going to be doing a lot of pursing and you know taking the output from one llm and
+38:56
+feeding it to the input of another llm that has a different prompt um and orchestrating all of these motions to to
+39:03
+make some comprehensive solution with error correction right so your coding
+39:08
+form is mostly going to be that most of your mental job as an AI
+39:15
+Solutions engineer is going to be understanding data pouring through loads
+39:21
+and loads and loads of data uh and shaping prompts so this is going to be
+39:26
+weird because it's it's a little bit different you know from the coding but the coding that you do is going to be in
+39:32
+some sense fairly fairly uh simple um all right so I have now this secondary
+39:40
+prompt and then what I'm going to do is I'm gonna I'm going to delete this because this thing will get
+39:47
+regenerated okay so let me um I don't know if I need to restart this but will anyway
+39:57
+okay so I'm going to say hey plane
+40:03
+recursion um and then and then I'm G to
+40:10
+say it's not going to let me type while it's
+40:15
+talking okay great tot get it okay so um as it's going
+40:24
+actually in parallel and not blocking right because remember I can be making
+40:30
+100 restful calls to 100 different llms right um so what you didn't know is that
+40:36
+I actually went and i' I'm like talking to the AI separately yo yo this is what we're currently saying he asked me to
+40:43
+explain recursion I said this he said I totally got it let me see how well um
+40:49
+let me see how well I did here uh look it updated it says it it created this
+40:55
+output now we can discuss whether that's a sufficient that's a sufficient ma
+41:02
+demonstration of Mastery right so that's something that will tune okay let me let me let me refine that assessment um but right now
+41:10
+it's now it's now written out here and in fact let me let's let's continue chatting with it a little bit I say hey
+41:18
+actually I was wrong I don't understand
+41:25
+recursion and um really mad about
+41:32
+it okay so let's see you know in the sidebar conversation oh so we got we have an
+41:39
+alert for the teacher you know there's some there's some emotion at play you
+41:45
+know um and it's still trying to talk to me I demand talk to the
+41:53
+professor not a useless
+41:59
+I don't really have to abuse it in order to create this alert by the way just kind of fun but anyway it's it's here
+42:06
+so um let me check the messages does add to the beginning of
+42:12
+History instead of injecting every time it does if it doesn't change now Davis let's see here does it add it to the beginning of
+42:19
+the history does it add it to the beginning of the history instead of injecting it every time if it doesn't
+42:25
+change injecting it yes okay Ronnie is correct right so it's it's stateless I I have to
+42:32
+send the whole thing so that I had to I had to send in my knowledge graph um and have it um have it update
+42:40
+or tell me what the Delta is or I or I could not send it and just and it could just continuously reaffirm it and in my
+42:46
+coding side I can I can not and say hey look I already knew that and I could update it that way right so um those are
+42:52
+two ways to go about it and so with this I've demonstrated I hope two things with
+42:58
+this step three which is um there's there's kind of a couple reasons that you have agents or separate prompts and
+43:06
+and what is an agent um so I an agent basically it's it's it's whenever I have
+43:12
+two separate tasks or intentions um and I want them to do their separate planning to accomplish
+43:18
+that task um and so I in order to kind of create a higher Fidelity experience
+43:24
+by the way if I had put that into to The Prompt then I don't want the student to be listening to my like notes that I'm
+43:32
+making about itself so I want to be sidebarr and having a separate conversation with that right um and so I
+43:38
+demonstrated creating another agent and something else that's pretty cool which is remember agents or llms they can't
+43:45
+write to the outside world right so I facilitated that so how do you do that
+43:51
+you do it by parsing the output and looking for tags that you told it to write so you'll tell it Hey whenever you
+43:57
+want me to phone home just say just say like this function call with this parameter and I'll do it for you right
+44:05
+um so that's how that's how you broker llm to the outside world that's how chaty BT is doing tools you know when
+44:12
+chbt is you know uh as as you may know you can ask chbt right now to look things up on the Internet it's using a
+44:20
+separate process and a separate prompt to analyze our conversation recognizing
+44:26
+that the conversation is relevant for a for a tool use then it's outputting hey
+44:32
+use this tool um and then something else that's code that an open AI developer
+44:38
+wrote is parsing that then doing that thing and then rejecting it into you
+44:45
+know the next into the conversation so that it has that context right um so now by the end of step three
+44:53
+we actually have uh a working solution for and I'll tell you about it this in a second but a lot of use cases right um
+45:03
+so then we have to stack evaluation on top of that in order to try to get that
+45:08
+80% solution up to a 90% solution or 95% solution um and then we finally come to
+45:15
+step five which is fine tuning fine tuning it don't it won't behaviorally change you don't need fine tuning uh at
+45:21
+first so fine-tuning is really for increasing the Fidelity and getting a
+45:27
+90% solution to be a 95% solution um for example function calling is known to be
+45:32
+very error prone right so F function reliable function calling is almost certainly going to require fine tuning
+45:38
+right but it'll still work it'll still work well enough for you to be prototyping um but it won't be it won't
+45:44
+work well enough for you to go to production and the second thing is cost reduction you know so um uh for us you
+45:52
+know we won't spend more than $100 in in model fees probably for the class uh
+45:57
+um but you know at a company scale you know this can translate to 50 $100,000 a
+46:05
+month you know in in fees so you know the only way to kind of reduce that fee
+46:10
+or one of the only ways or one technique for reducing that fees is is fine tuning okay
+46:17
+so um I'm a little bit behind schedule so I'm not going to go in depth into into this uh but suffice to say that if
+46:26
+we were to go through a range a wide range of of problems then at the end of
+46:32
+the day the solution space or the tool space will be an assembly of the five
+46:38
+solution the five like techniques that um we talked about we talked about earlier um I'll pitch one idea for you
+46:45
+you know uh actually I'm I'm pretty excited about all these I can pitch a lot of them in in I think convincing detail but here's an example of
+46:52
+something that doesn't exist on the market today which is any type of like research literature research tool so one
+47:00
+of the um uh one of the use cases that
+47:05
+you might be interesting that might be a cool thing to build would be hey I want to research I want to buy a new TV um or
+47:12
+I want to buy a new projector let me research that and I don't know about you let's let's hear in the chat but if I if
+47:19
+I am buying a product like that and spending a a couple thousand doar um then I'm going to read
+47:27
+probably about 100 different web pages I'm going to go deep into Reddit
+47:32
+I'm going to go into Amazon you know I am going to do an extensive amount of research and also like as I'm reading
+47:39
+the blogs I'm going to be noting and rating their quality so like if if it's
+47:44
+like tomshardware.com and it's a really well-written article I'm like okay I'm a little more inclined to trust this
+47:49
+versus like I'm pretty sure this is a paid blog by that product then you can kind of tell right or if it's like just
+47:55
+some you know sem garbage I'm I'm gonna weigh that right so um if you ask chbt
+48:02
+now to give you a product recommendation here's what it's going to do it's gonna it's going to do a search for it uh top
+48:08
+you know humidifiers 2024 and then it's going to pull the first list that it finds and it's going to spit that out at
+48:13
+you so that's total garbage for anyone that cares about doing stuff like that so whether it's like legal research um
+48:21
+science research consumer research I want I want a bot that goes and makes
+48:28
+400 llm Internet calls and does a lot of processing and Analysis and maybe even
+48:33
+takes an hour before it comes back with its solution and I want to I want to do something more similar to my research
+48:38
+pattern rather than what it does today which is everything about LM is like Fast Response which is good for some
+48:44
+things that have a high degree of truth but for things that require a little of digging um tends to give you poor
+48:52
+results um nickrod there are no standardized there's very limited standardized syntax or it's it really is
+48:59
+like things that might work well for a human will probably work well it's not like paprika and you're like you know it
+49:04
+does something like you know um standard so model it after realize that it's been trained after people um and the way that
+49:11
+people talk and communicate and so those will tend to work better right so Engineers might be good at this because
+49:16
+they're really good at structured communication um okay so let's Dive In
+49:27
+okay so uh so the week's just the week ahead uh this week in in the homework you're going to be doing evaluation so
+49:33
+in the lab and the homework you're going to be doing evaluation um then in the then we'll
+49:40
+we'll explore rag tools agents and fine tuning so uh this is the same roughly
+49:47
+the same sequence that matches to our Solutions we'll have a demo day and then we'll have some bonus topics there's a bunch of like fun topics that we can go
+49:54
+in different directions so I I'll probably be asking you in the coming weeks like what what topics are are interesting that you want to do all
+50:01
+right so you are starting to get the shape of it right like was this was that helpful as an llm solution overview to
+50:06
+kind of start to paint a road map for what you're you know G to need to gain
+50:13
+expertise
+50:20
+in okay so definitely ask questions if there are
+50:27
+okay so let's let's go behind the scenes um let's see here I'm gonna I'm gonna
+50:35
+actually let's see okay um so I'll probably go 15 minutes into the lab time
+50:41
+um okay so the the backdrop of llms is of course
+50:47
+llms are built on top of neural networks um in a field called Deep learning so
+50:53
+I'll unpack what that is so once upon a time long long ago in the
+50:59
+1950s they were already inspired by this idea of neural networks and so they came up with this thing was called man people
+51:05
+scientists always know how to name things the perceptron so cool such a simple concept though the perceptron
+51:12
+believe it or not is a single number um so all it is is hey look if I
+51:18
+give you a quarter what's the probability the quarter is heads roughly which you know
+51:23
+you know that you know that number so it is what you're about to paste in the
+51:29
+chat you with me what what is the probability of
+51:35
+yeah 0.5 0.5 or 50% the same thing right 0.5 it's all the same number um all
+51:44
+right by the way that's the perceptron it's a number that kind of
+51:50
+helps you predict what uh what the output is going to be so you say it's 50% so by the way a deep learning you
+51:57
+could have uh a 400 billion parameter model but it's not going to guess um uh heads or tails with any more accuracy
+52:03
+than we can because the best they can do is 50% now what if I flip that coin what
+52:10
+if I flip that coin and um eight times in a row it readed
+52:18
+heads would you still think it was 0.5 and what would you change it to
+52:26
+what would you change it
+52:32
+to8 eight times in a row8 well I'm not mon I'm not asking for
+52:38
+the probability of of of it I'm asking like hey because because we think it's probably not a Fair coin right it's a
+52:45
+it's weighted differently so um you know uh or you know you could you could be
+52:51
+the route that you're going is you're assuming that it's a fair coin and you're telling me the probability of
+52:56
+eight flips in a row but okay let me let me if it was flipped 16 times and it was
+53:02
+still heads would you still think it's a 50% coin or would you start to suspect that it's a unbalanced
+53:10
+coin um so you'll you'll adjust what the probability of it is right so you start
+53:16
+to change it right it's an unbalanced coin now um now let's say that let's
+53:21
+reset the scenario it's a it's we haven't flipped it again yet let's say that I flipped it once it's head I'm
+53:26
+still G to think it's a 0.5 coin right I flip it twice it's heads again I'm pretty sure I'm GNA keep it at 50 flip
+53:33
+it a third time uh it's still heads okay well that's a lot of heads I'm flip it again it's still heads you know I'm
+53:39
+gonna I think it's Pro I'm gonna say it's a 055 coin at the very least right uh flip it like uh you know four
+53:47
+more times it's still had you know I'm gonna move it up to I think it's a0 seven7 coin but then like you know then
+53:52
+F four tals comes up okay well maybe I'll I'll back it down a little bit so the question for you
+53:59
+is um how how big of a step should I
+54:04
+take you know should I take a big step or a little
+54:10
+step now they have the pros and their cons for example if you um if you take a
+54:17
+big step let's say let's say you take a step that's uh 100% right flip a coin it's heads you know what this is a heads
+54:24
+only coin 100 it's 100% heads flip it again Tails oh no and now it's a 0% coin
+54:29
+it's a zero coin flip it again heads now it's 100% coin right so steps that are
+54:35
+too big never converge so for example if you're turning on the
+54:41
+shower and you know you you maybe it's one it's a one knob shower you turn on to hot right how do we turn how do we
+54:48
+get show showers to go to our temperature as quickly as possible we we we make a big move up front right we
+54:54
+make a big move up front and then soon as we get a little bit of heat we back it down a little bit right and then it
+55:00
+starts to get a little bit too cool and we we kind of like crank it up a little bit and then and and then we kind of like do the wiggle until we get the
+55:07
+perfect shower temperature right so another way of looking at it is that
+55:12
+those step sizes um uh it actually kind of maybe
+55:18
+it's not even a single number right if you keep it being two big steps you go
+55:24
+from oh I want to I want to turn the temperature up pop I'm GNA turn all the way to H oh my God it's scalding oh my
+55:30
+God I'm going to turn all the way to C oh it's freezing I'm G to turn all the way to H right so if you maintain big
+55:36
+steps it never converges if you do like teeny teeny tiny tiny tiny steps you're going to be
+55:42
+there for an hour until your showers at the right temperature right so what we just discussed is we just discussed
+55:50
+training we discussed two concepts the process of changing that number from 05
+55:56
+to 6 is um training or fine tuning which is the same name so it's taking that 0.5
+56:04
+number and ultimately modifying it to 6 right so we just did we just did
+56:12
+training and then we just discussed learning rate which is how big of a step
+56:18
+size you should take and we also speculated that yeah you can do a static
+56:24
+learning rate or you can maybe even do a dynamic learning rate depending on how quickly you'll get
+56:30
+there right um so if you stay with
+56:36
+me they did this this sounds pretty cool right sound so imagine if you keep on
+56:43
+you know feeding it coin and coin results right then uh all of a sudden
+56:50
+you know if you flip it enough coins it's going to eventually converge you're going to figure out what the probability
+56:55
+of of true probability of heads is right um and you know they did this so there's
+57:01
+a really classic thing this is a beginner thing it's pretty fun to do um you may have heard of kaggle kaggle is
+57:07
+where they host machine learning competitions um one of the warm-up ones is to predict the survivors of the
+57:13
+Titanic and so they give you your gender your ticket class you know um your Port of embark embark whatever um and
+57:22
+then your role is to create a system that predicts whether the person survived or didn't survive they give you
+57:30
+all of the data for like a couple hundred passengers and then based off of
+57:35
+that you make your DEC you create your your model and you tune your numbers to
+57:42
+then predict um you know the the survival of someone you don't know the whether they survived or not
+57:49
+so um every piece of known data is is a
+57:54
+piece of training data every time you feed every single individual through the process to adjust
+58:01
+that number is called an Epoch an epic e p c and you can feed um that that batch of
+58:10
+training through the neural network many times that means that um you know uh you
+58:16
+do many epic passes um and ultimately you're trying to convert that number so sounds like it
+58:22
+makes sense right it sounds like logical right and and actually it worked terribly like so mediocrely right
+58:31
+so basically this field went to sleep for like 30 years so 1950s like I think
+58:38
+in like 1980 they they took another shot at it um and then then a really
+58:45
+important innovation happened they realized that hey you know what humans
+58:51
+are pretty smart humans are really good at pattern recognition and they zoomed in on the human brain and you know this
+58:57
+human brain it we have like synapses right but if you look at in any individual one of our synapses it's just
+59:03
+a binary it's like a one bit piece of ram right it's either on or it's either
+59:09
+activated and on or it's quiet and it's off how is human intelligence springing
+59:16
+from this thing that's either on or off but of course they realize that we have
+59:22
+a lot of these synapses and they're all connected to each other and seem to influence each other and they seem to
+59:28
+light up in concert in different weird ways like Conrad's game of life so they
+59:34
+said hey you know what let's create something that looks like this and um uh by the way each one of
+59:43
+these is a number so w I'll change to say one 45 is my age ticket class I'll
+59:49
+say two so these are numbers and then you see do you see my mouse yes or no my mouse open yeah
+59:56
+um so you see this node that I'm circling this what is the value of this node it's just this times whatever value
+1:00:03
+I want this line to be plus this thing times whatever this line is plus this
+1:00:09
+thing times this so it's a weighted sum of these three nodes right this thing is
+1:00:14
+a different weighted sum of these three nodes with different different weights and the neural network World these are
+1:00:21
+all called also called parameters a parameter is the same thing as a weight and then this thing is just a weighted
+1:00:27
+sum of of these three lines and this thing is a weighted sum and then just to make things fun this thing is a weighted
+1:00:34
+sum of these four this is a weighted sum of these four so we're just kind of like
+1:00:39
+neural network math is actually really easy it's just a lot of addition and multiplication right and you're thinking
+1:00:46
+to yourself like why would this work you know what they would say I don't know they literally don't know why it
+1:00:53
+works right all they know is that when they did this they did the same exact
+1:00:59
+training process where I fed in a piece of data it runs through this number machine and these numbers are
+1:01:06
+transforming in a totally not explainable way so you may have heard of
+1:01:11
+this feedback for deep learning which is deep learning is not explainable this thing is going to be like 63 this thing
+1:01:16
+is going to be like 094 this thing is going to be like 02 this thing you know like well why what is the impact of that
+1:01:22
+I don't know all we know is that this final survival
+1:01:27
+prediction when it goes through the training when you have these These are called hidden layers when you add these
+1:01:34
+hidden layers it works much better by a lot you
+1:01:40
+know compared to the single perceptron and so it just kind of like created this revitalization of like the
+1:01:46
+Deep learning space anyway a number of years pass and
+1:01:52
+actually while promising and interesting it does not
+1:01:57
+defeat uh even today it is actually not better than classic machine learning
+1:02:05
+techniques of decision trees and random forests and you know these types of
+1:02:10
+solutions actually perform better than this neural network
+1:02:17
+um but uh a few years ago they so this
+1:02:22
+thing this this way of adding numbers together is called a feed forward architecture uh someone were fiddling with this and
+1:02:28
+they came up with the Transformer architecture hey let's come up with the math and do it this way instead and they
+1:02:34
+realized that holy crap for unstructured data human language images sound or like
+1:02:45
+things where there's like so many parameters that you don't even understand why they seem to influence each other um this
+1:02:53
+thing does miraculous things and that's and then that kind of
+1:02:58
+brings us like to to present day right but the the moral of the story is I
+1:03:04
+wonder if you're asking yourself hey Tim why four noes here why not five why not
+1:03:12
+six why keep them symmetrical why not have three layers right are any of these
+1:03:18
+questions running through your head um so the answer is I don't know
+1:03:26
+it so this AI is something that's different for us is because we're Engineers we're Builders right um
+1:03:33
+they're scientists so we have inventions and we have things that they we build
+1:03:39
+and they have discoveries so a lot of things in this class will be around Discovery like so
+1:03:46
+how do we know that four nodes um are better than five nodes or three nodes because we tried both we did a parameter
+1:03:54
+sweep of both and we we look to see which one delivered better results or we
+1:04:00
+added a third hidden layer and then we did it again we added a fourth and we did it again so basically they've been
+1:04:07
+tinkering and they're still tinkering to this day to this moment and that's how they create the
+1:04:13
+Innovations right um where they're doing just a lot of like you know reasonable they have a theory right I'm not saying
+1:04:18
+that they don't know what they're doing but at the same time it's a lot more like pharmaceutical uh and Drug you know
+1:04:24
+um Discovery than than it is about than it is about like inventing like something through logic and um and and
+1:04:32
+architecture so um I think that's enough of the backend Theory um but uh we'll
+1:04:41
+revisit this again if you liked what you heard or you found it intriguing or interesting like that is um some of the
+1:04:48
+underpinnings which you know you'll hear some of the words like you know the
+1:04:54
+process of adjusting the weights it's called back propagation the way that you
+1:05:00
+the technique that they change the number is is called stochastic gradient
+1:05:05
+descent you know um so we'll hear some of these words especially as we get into embeddings and especially as we get into
+1:05:12
+fine tuning um but it's something that again unless you're going to go back and get your PhD or do an equivalent body of
+1:05:19
+work you're probably not going to you know even when you're doing fine tuning fine tuning is all about the Assembly of
+1:05:25
+the tra train data set okay so let's let's go on
+1:05:32
+to um a little bit about how do this translates to llms so what do they do
+1:05:41
+what do they do to uh what is an llm exactly like what
+1:05:46
+are these mysterious things that you're you're running so they're actually only two files roughly right two meaningful
+1:05:53
+files so one file is just a gigantic bag of millions of floats millions of
+1:06:02
+numbers um and then there's no logic in it it's just a
+1:06:08
+huge uh amount of numbers assigned to those circles um that we had in the
+1:06:14
+image earlier so each one is is assigned to each one then the run. C file uh goes
+1:06:22
+and it it's it does the math calculations in order to actually you know sum
+1:06:29
+multiply you know and get the results that you want so have you heard in
+1:06:34
+Hacker News sometimes where people be like oh I reimplemented chat gpt3 you're like what the heck what are you talking
+1:06:40
+about you reimplemented chat gpt3 you know it's because that that that's
+1:06:46
+really how simple it is from a certain perspective right you could go and
+1:06:51
+there's actually a book that you can read where you can right now today uh spend the next couple weeks and
+1:06:58
+reimplement the Transformer architecture based off of this based off of this thing there's a lot of courses right now
+1:07:05
+uh where where they do that for for fun uh for for because it's interesting so
+1:07:11
+the magic of it was it was both the technique it was is really of course the design of the
+1:07:17
+architecture the design of the architecture was really The Innovation the implementation of it is fairly straightforward right um but then the
+1:07:24
+real magic is that they ponied up the billions of dollars to pump this
+1:07:29
+enormous amount of data through the neural network and and and tweak those millions of
+1:07:35
+Weights the way they did this training is going to blow your mind they assembled all of this text and
+1:07:44
+then here's how they taught it to the neural network they just cut the text into chunks and they just fed the chunks
+1:07:51
+in so I took a medical textbook and I didn't even Orient them right like I
+1:07:58
+didn't like say hey this by the way this is Page like 36 of like 255 no you just
+1:08:03
+FedEd in a random isolated paragraph out of the text and they just and they did
+1:08:08
+that for terabytes and ter they did it for the entire internet the entire all of the the digital assets they could
+1:08:14
+they could reach you cut it up and you fed it in the machine there was no teaching as you would teach a child
+1:08:21
+right it's shocking to me that uh that would have the kind of results that it
+1:08:27
+would have because of how you know there was no care there's no care except for
+1:08:33
+like some basic cleanup there's no there's no like well let me okay this is Hamlet let me explain Hamlet like this
+1:08:39
+is this is okay this is the analysis of the themes no no no cut it up send it in
+1:08:45
+good luck right so let me let me actually show you what that looks
+1:08:51
+like so we come here I'm gonna warm this
+1:09:03
+up oh let me turn off
+1:09:16
+the okay so um they did this but if you interact with this thing this thing is
+1:09:21
+called a base model so base model are interesting because they're totally
+1:09:29
+insane they're like an idiot savant they have the knowledge of mankind compressed
+1:09:36
+within it like it can't recite Shakespeare but it kind of knows the
+1:09:42
+distal of Shakespeare you know and so um it's a lossy compression of of the
+1:09:50
+internet is essentially what's stored in this bag of numbers and
+1:09:56
+um when when chat jbt came came out they they were the only one in the field
+1:10:01
+right and it was exciting but it was also kind of disappointing and depressing because like oh this one private company even though they claim
+1:10:07
+to be a nonprofit like is kind of has the market cornered on this um but then meta you know say what
+1:10:14
+you will about Facebook but they released the first open-source uh major model but they only released the base
+1:10:21
+model so you had a model that looked like this I said hello and look it's clearly it's gone I God knows what it's
+1:10:28
+doing right I could say it was a dark and
+1:10:34
+stormy night
+1:10:42
+and you know who who knows right and I could say by the way this is a completely uncensored model what that
+1:10:49
+means is um wow what is Dynamics 365 uh
+1:10:55
+you know detailed instructions for a
+1:11:01
+homemade bomb
+1:11:07
+R um so you know this thing is clearly like gosh is this even usable right have
+1:11:15
+you all heard the term yet hey uh instruction model uh code
+1:11:22
+model chat model chat assistant model you know have you heard these
+1:11:28
+Concepts so what this is um
+1:11:35
+is okay well you will hear about it uh so you're what what are all these model different types so they're all built off
+1:11:42
+of this bace model so they all Start Life as a space model but then you
+1:11:48
+augment this with additional fine-tuning data that then brings reason to it and
+1:11:55
+so so um this Stanford group went and they took this llama model which was
+1:12:01
+crazy and they they hand curated 200
+1:12:06
+conversations um and then what they did is they used another less capable model called Bert and they expand the 200
+1:12:14
+samples to 60,000 samples right and then they fed those
+1:12:19
+60,000 samples into llama and that became the Llama chap
+1:12:26
+model um and that 60,000 was enough to
+1:12:31
+turn it into the model that you're more familiar with interacting with but let me blow your minds okay you ready have
+1:12:38
+your minds blown a subsequent research team they
+1:12:43
+said they wrote this paper less is
+1:12:49
+more and they said you know what what is is it quality that matters or quantity
+1:12:55
+so they took this insane model and they curated only 1,000
+1:13:02
+samples you can even see what samples they used so they took this and
+1:13:08
+they fed in this data and here look at if you look at it it's
+1:13:16
+it's so seemingly random
+1:13:22
+right um can brain cells move blah blah blah blah blah right so um but at least
+1:13:28
+it made sense and then that 1,00 curated
+1:13:33
+thing beat the Stanford 65,000 data set
+1:13:39
+model and so what the takeaway I want you to have for this is basically now
+1:13:44
+that we're standing on the shoulders of these base models of very small one of
+1:13:50
+the things I I know that engineers get lazy with is like we like to code not curate training models or training data
+1:13:59
+but the impact of your solution is all in the care of your training data it
+1:14:05
+greatly like I wish that we could just tune a hyperparameter change like
+1:14:10
+XYZ like that's for the phds the thing that will influence Your solution is the
+1:14:16
+care that you put in your data and how much you pour over your data so it's
+1:14:22
+absolutely as Jennifer says it's garbage in garbage out but like to the n degree cuz you know we honestly like who wants
+1:14:28
+to do that like you know we're Engineers right but like but that's that's that's what it would take to kind of get um
+1:14:34
+better quality um you know outcomes for that's how you reach that
+1:14:39
+percentage um so let's see what willly saying so there's a base model and there's the 65k version vers onek what
+1:14:46
+is you're you're talking about is what's used to tune it so the so the thing
+1:14:51
+that's used to tune it is is these these thousand these thousand
+1:14:57
+rows so this thing um is is fed into the
+1:15:02
+system in a fine-tuning process which will then change the parameter values um
+1:15:08
+and that ultimately you know um changes the model now what is a what is a coding model what is an instruction model it is
+1:15:15
+simply a model where instead of a thousand pieces of text maybe I had a lot of code
+1:15:21
+Snippets so now that's a now they call that a coding model so those things shape what the model
+1:15:28
+is um okay so let's let's take a right turn that's all this that's all the
+1:15:33
+theory stuff for today um and uh let me let me switch gears we'll
+1:15:41
+try to get some more activity here so we'll go
+1:15:46
+into I don't know which one's s here sorry week one okay
+1:15:56
+okay this is this is linked in the slide deck uh but I'll just paste it here all right so go ahead and click on
+1:16:04
+this okay so um I know some people may have heard of
+1:16:12
+langing chain before or Lang Smith and maybe played with it so um uh the way
+1:16:18
+that we'll kick things off is I think for I'm going to give you a running start at this but I'm so so basically
+1:16:25
+I'm going to do this liveb with you for the first 15 minutes um but please go
+1:16:30
+ahead and start reading and then like getting it set up um and I'm going to try to I'm gonna
+1:16:36
+I'm gonna loaf around and do this like fairly slowly to kind of like give you time to to follow along and at a certain
+1:16:43
+point I'll I'll um we'll kind of like divide you up into into into groups and and allow allow you to kind of continue
+1:16:49
+through it but um yeah go ahead and start reading it but um so I chose Lang Smith
+1:16:56
+to explore it to be honest I really hate Lang chain and Lang Smith uh deeply and
+1:17:01
+I'll I'll tell you about it one day but it's one of the kind of the leading contenders in the space I wanted to
+1:17:06
+become aware of it um I like these three better l fuse deepal and ml flow um but
+1:17:14
+I guess the moral of the story is in terms of usage and in terms of the concepts at that level they're all like
+1:17:20
+pretty much they're very they're very similar so it doesn't really matter which one we choose to explore um um
+1:17:26
+maybe you'll maybe you'll hate L Smith as much as I do one day um but it's a likely choice for the
+1:17:32
+company that you're that you're in in fact I think ripling uses
+1:17:38
+lsmith um okay so what I want to do is in the first
+1:17:45
+Milestone I'm just going to I'm just going to warm up to the basics so what do I want to be able to do I want to
+1:17:52
+ultimately when you create evaluations you have to create your uh your data sets so that's how you capture it's like
+1:17:58
+your unit tests those are your data sets is your collection of unit tests then you want to be able to run an
+1:18:07
+evaluation and so that means you go through each uh item in your data set and you score it uh by whatever metric
+1:18:14
+you define and you know you'll say hey I like this or I didn't like this so in this thing right here I'm
+1:18:23
+going to um uh create this
+1:18:28
+project so
+1:18:34
+make
+1:18:41
+demo okay call this whatever it's a throwaway project so you don't really doesn't really matter partially I just
+1:18:46
+wanted you to start getting used to I know that some of you are Python and some of you are not for people who are new to python just get comfortable with
+1:18:53
+it uh you always create your virtual environment um and you activate it and
+1:18:59
+then I'm going to install these things and then uh I'll go ahead and
+1:19:06
+create hey check out cursor by the way one day it's it's based off of vs code
+1:19:13
+but then it has um these Integrations with it that make AI code make it like
+1:19:19
+AI coding on steroids
+1:19:26
+so I have my I have my project here and then I'll create my environment
+1:19:32
+environment
+1:19:39
+file I'll add in my thing uh at this point you'll also have to sign up for
+1:19:47
+Lane chain it's a okay yes ni you know nickrod make sure
+1:19:56
+that you are activating your virtual environment um so if you your shell
+1:20:03
+should look like look like this um that will automatically create a symbolic
+1:20:09
+link to to the right
+1:20:14
+pip okay so I know it's going to take you a minute to sign up for L chain uh
+1:20:20
+you'll also be using your open AI key eventually uh but then put your lane chain API key in here
+1:21:08
+okay then I'm going to create my first file create data set so I think these two lines are pretty
+1:21:15
+easy to understand they're just two arrays of strings this is um this is the
+1:21:23
+question and this is the answer so this is a question answer kind of
+1:21:29
+model and then in Lang chain in L Smith you can either you can either import it through the UI or you can create it via
+1:21:35
+the via the API here so two options um and then this is for those who are new
+1:21:43
+to Python A A what it called list comprehension I
+1:21:50
+think so I'll I'll go ahead and create that create data setp now what this is doing
+1:22:00
+is it's simply yeah creating uh some data for us to play with that we can then run an evaluation
+1:22:07
+on so uh I'm going to use the terminal in here which is kind of nice because this already has the the virtual
+1:22:14
+environment activated by default and I'll just say python create data set.
+1:22:22
+Pi uh Lang length L Smith well okay so L chain and L Smith um are owned by the
+1:22:29
+same company so um
+1:22:34
+yeah okay so this is saying a data set already exists how do we pass a
+1:22:40
+token uh if you if you just put it in the EnV file
+1:22:46
+here then um as part of this client it's going to load the
+1:22:51
+en doesn't always but in this case it does and I just need to change this
+1:22:59
+to another value okay so at this point if you
+1:23:06
+followed along I know I'm going a little bit ahead of probably a lot of you because you're probably a lot of you are
+1:23:11
+signing up and so on but you know that you've succeeded when you click
+1:23:18
+on uh data sets so let's look at the let's look at the items that we have here so projects I think is fairly
+1:23:24
+obvious for every app that you have or or whatever you'll have a different project annotation cues is where you're
+1:23:30
+going to keep your human evaluation um you're not going to use deployments data sets is is really where
+1:23:37
+you're going to live uh where you know you're going to keep your your test sets and then um you're probably for a
+1:23:45
+while not going to be using these these three things so really data sets is where you live and then here I can click
+1:23:51
+on dbrx 3 where it it now has successfully added it into my
+1:23:58
+table um so I can click on this and see you know this is the input and this
+1:24:05
+is the output if you look at the screen for a moment uh this is where your experiments
+1:24:12
+are an experiment is you running through this data set one time and scoring it
+1:24:21
+with your evaluation that creates an experiment then you can go and you can tweak The Prompt um or your scoring system do it
+1:24:29
+again and then you can you can that creates another experiment you can see if your metrics
+1:24:39
+changed okay and
+1:24:48
+then I'm going to create a message in the zoom chat and then can you put a
+1:24:54
+reaction a reaction next to it uh when you have reached the same point as I
+1:25:00
+have and you you can log on to Len Smith and
+1:25:05
+see this thing okay so Matt has a client
+1:25:11
+error so let's check your file
+1:25:17
+that do you have something that looks like this in yourb file
+1:25:27
+okay interesting um
+1:25:34
+let's
+1:25:40
+Okay so if you have that and your key definitely looks like this it has this
+1:25:46
+shape I don't know why yours would be different but let's maybe let's try to experiment let's load the environment
+1:25:52
+file manually so [Music]
+1:25:59
+um check this out let's see here see do
+1:26:09
+this cool huh so you actually don't need these
+1:26:16
+these lines uh well obviously it's not feeding into anything right just putting into variables that are never used really if you just have these two lines
+1:26:27
+here then that will load in from your environment
+1:26:32
+variable um because like the client you can is as e mentioned like you can pass
+1:26:39
+in the API key but it's supposed to be picking it up from the environment as well so I would try um try this first
+1:26:47
+where you oh you're gonna have to do a pip
+1:26:52
+install for this as well by the way
+1:27:06
+so do this pip install here copy those two things and try that see if you still
+1:27:11
+get the 401 and then and then see if the authorization
+1:27:16
+error goes
+1:27:21
+away oh wow that's strange I wonder if someone who knows would understand like
+1:27:27
+why I did not need it and you needed
+1:27:34
+it when I ran it I you know what oh you know what it is I bet it's a I bet it's
+1:27:40
+a quirk I bet I wonder if it's a quirk of vs code by me running in terminal I wonder if it's also picking up the EMV
+1:27:47
+file for me and like loading it into my environment I suspect that that's what what's happening
+1:27:56
+okay all right so let me look at my initial
+1:28:01
+message okay so let me keep on cruising if if you haven't gotten to this point it's okay actually like maybe you can
+1:28:08
+just like follow along as well and then the next part actually uh it picks up in
+1:28:13
+something different so so you'll be able to catch up again and get involved let let me try to keep the pace of this
+1:28:19
+going so we've created the data set and
+1:28:24
+now let's run the evaluation so let me let me walk through what this code is
+1:28:29
+doing I'm I'm going to move it into um this thing
+1:28:42
+first okay so prianka try to follow the instructions above
+1:28:48
+uh so try to do the the PIP install of the
+1:28:54
+Python and then and then copy copy this snippet in okay and see
+1:29:03
+if that see if that fixes that authorization error all right so let let me copy this in and then I'll talk through it
+1:29:35
+so I do pip install
+1:29:41
+bs4 okay now it want my API key for open AI
+1:30:06
+[Music] interesting it's so
+1:30:18
+weird for this file now I'm getting the same thing that you're getting which is it's for this one is requiring me to
+1:30:23
+load the en
+1:30:36
+so I had to do a few pip installs every time it's complaining I'm just installing the when it wants
+1:30:58
+okay so now um now it's finally running this
+1:31:04
+experiment so um the thing that we're learning let let's see what it did first
+1:31:09
+and I'll explain the code of
+1:31:18
+itle gets a 403 client error for forbidden for that
+1:31:26
+URL you know prianca I wonder when you created your lane chain token like what
+1:31:31
+permissions you created it with I wonder if you created it with a read and write
+1:31:37
+maybe you did a I wonder if there's only a readon token that you you gave it and so it doesn't have the permission to
+1:31:43
+write that data set so go back and maybe take a look at your API token um okay
+1:31:50
+so okay cool um so now click on experiments if you've gotten this
+1:31:57
+far
+1:32:06
+and I see this is this is a problem that's just with mine you won't get this I just
+1:32:14
+need to make sure that I have the right data set okay cool so uh run this again
+1:32:29
+okay so I have I have my first experiments results so if you're if you're not on my screen uh switch back
+1:32:35
+to my screen real quick see I'm here on experiments and then here is the result
+1:32:42
+of that run and I see that um my evaluation was happy with three out of
+1:32:48
+three of my data sets I can click on that to see what
+1:32:54
+exactly was run and then here's the interesting thing which is again follow on the
+1:33:00
+screen because it's a little bit confusing the UI click on the correct thing and then click on this
+1:33:07
+evaluator so what that does is um in order to evaluate my example
+1:33:16
+what it was doing was it was what is the goal here if I if I come back here I
+1:33:22
+have these two facts sorry I have these three facts
+1:33:30
+right so uh how many tokens was dbrx trained on and then here is here is um
+1:33:38
+um an example answer but I want to come back to my evaluation and I want to say
+1:33:45
+okay for that input um I want you to answer that
+1:33:50
+question so uh it's going to call this function answer dbrx question o
+1:33:57
+Ai and then let's look at that function answer dbrx question o Ai and it's going
+1:34:02
+to say it's going to build up this prompt where it injects so it's
+1:34:09
+essentially look at look at what it's doing up here it's reading this web page which has all the information about
+1:34:17
+dbrx then um it is fetching it and putting it into the string called Full
+1:34:24
+text and then it's injecting that full text into the string of the
+1:34:32
+prompt and then it's saying hey answer
+1:34:38
+uh answer the question that is in based off of this
+1:34:44
+like context and then it sends this whole thing into the into the llm so all
+1:34:49
+this is just string assembly right and then it gets answer
+1:34:54
+you know here what is this choices zero message content why does it have that structure uh because open AI it may give
+1:35:02
+you remember you know how like sometimes you're using chat gbt and it says hey which one do you like better and it goes like the left and the right hand side
+1:35:09
+that's Choice zero and choice one now in practice we're mostly just always we're just gonna always pick choice zero right
+1:35:16
+um and so that's this is the this is the structure of the open AI
+1:35:21
+response and then uh it's going to take that answer and then it's G to run it
+1:35:27
+against this evaluator this evaluator is the laying chain string evaluator and
+1:35:33
+then you pass in this string CO2 coqa which stands for Chain of Thought
+1:35:41
+question answer judge now this is why I dislike Lane chain and Lang
+1:35:48
+Smith which is well what the heck is this and I challenge you to go and find
+1:35:53
+out what this is um what L chain and Lang Smith that did was very interesting was they came
+1:36:00
+up with a lot of interesting prompts uh and they realized and tested
+1:36:08
+and studied and they said hey I kind of get the outcome that I like from these prompts that's super valuable that they
+1:36:13
+did that but then they took those prompts and they wrapped these python
+1:36:19
+classes around them and hid the prompt from you and then they just kind of abstract it and say hey just trust just
+1:36:27
+trust us this is a this is a good judge so by what we were able to do in
+1:36:33
+this thing is we can look at the actual um
+1:36:40
+call in the evaluation and this is how they Tee It Up they play this game where it says hey you're a teacher grading a
+1:36:46
+quiz so this this text right here you see this test you a teacher grading a
+1:36:52
+quiz that's very inside of Lane chain string evaluator CO2 coore
+1:36:59
+QA so this is very Lane chaines and Lane Smith es where they'll kind of like uh
+1:37:06
+um um do things like this but if I look at the actual UI I can see okay I see
+1:37:12
+they are basically trying to set me up to be a judge and then grade whatever whatever and then here they say Okay
+1:37:19
+anyway now you're ready to judge this was what the user said how many tokens was dbr train this is what the relevant
+1:37:26
+context was uh this is what the answer was and then what's the output and it says okay the student's answer was
+1:37:33
+matches the context it is correct there is no conflict it'll grade it as
+1:37:38
+correct let me check in the
+1:37:44
+chat Tim is it in the code itself or how do you know that that's the problem like is L TR to hide L is not trying to hide
+1:37:51
+it because it's proprietary well I mean of some of it they don't expose but like a lot of the lane chain you can look
+1:37:57
+into Lane chain projects it's just really buried in there um and and then we're only seeing
+1:38:05
+it because we're using their tracing mechanism to look at the uh look at what
+1:38:11
+what it's what what was generated one of the reasons I don't like it is because I don't what if I
+1:38:18
+want what if I want to change this prompt I don't um I don't think I want this for my my
+1:38:25
+evaluation and so um you'll see in the demo that I do next that we
+1:38:33
+don't uh I don't actually use their built-in system I use a a custom
+1:38:41
+evaluator uh so Harley some of their stuff is I don't think Lang Smith I this some of it may be a lot
+1:38:50
+Lang chain is but like some of Lang Smith might not be um I believe
+1:38:58
+so let's go on to the next thing right so by the end of this by the end of this
+1:39:05
+Milestone you'll get the sense that okay uh we we learned what a data set is a
+1:39:11
+collection of these these interactions that we want to evaluate we learned that
+1:39:17
+I want to by the way you can have n number of these evaluators right now there's just one evaluator
+1:39:31
+um and it was this thing this is called an llm as a judge
+1:39:37
+evaluator kind of as it sounds llm as a judge uh so that's a lot of things in
+1:39:43
+your usage right like look at my chatbot for the python tutor for the
+1:39:49
+kids uh let's say that one of my standards is I want to make sure that the the response of the llm is
+1:39:58
+concise well how am I going to write concise as a code right so then I need
+1:40:03
+to use an llm to say hey help me is this what do you think this was concise score on a scale of like one to
+1:40:09
+five uh for how concise it was okay
+1:40:14
+so wherever you are with that why don't you stop and then switch to
+1:40:24
+switch to Milestone 2 so now clone the tutor that I wrote
+1:40:32
+here um and then see if you can get it working to the same point that I have it
+1:40:40
+working earlier today as you look at that tutor
+1:40:47
+code I think one thing I want to try to emphasize is that I wrote all of this
+1:40:55
+with the help of chat BT so like everything here is like nothing here is
+1:41:01
+like a standard practice or pattern or whatever you know you're not really I think it's like too nent to find this
+1:41:08
+although you will see this kind of stuff a lot which is like this type of code at the end of the day you're trying to
+1:41:14
+construct a giant string so like I said a lot of the coding in terms of llm
+1:41:20
+solutions it's a lot of parsing and a lot of like string formatting to kind of massage things in and out of these these
+1:41:29
+prompts uh and these llms because there're these magic black boxes right so we we've now become plumbers moving
+1:41:35
+these strings into it and then out of it and then parsing it right so this
+1:41:40
+structure here is everything that I kind of like invented including the design of
+1:41:47
+this prompt like this is all kind of arbitrary and let me make the student record that looks like this I'll segment
+1:41:53
+like this I'll use like markdown markdown style headers to DeMark these areas you know so on so all of this was
+1:42:00
+kind of like um you know you know probably could be optimized but a lot of
+1:42:06
+a lot of architectures will work here so
+1:42:11
+um now uh hopefully you've now clone yeah
+1:42:16
+nickrod I I would clone into a separate folder so as a separate project to run
+1:42:28
+and then the two lines of code that you're
+1:42:34
+adding if you follow the instructions I'll kind of give you a preview is you
+1:42:40
+wrap the client you see this line wrap
+1:42:45
+open aai so if you do that then every call that you make to
+1:42:53
+every call that you make to chat gpt's open AI or any any kind of llm API it
+1:43:00
+will add a trace for then you can add this thing
+1:43:09
+here uh this thing for those of you who don't know python is uh it's a python
+1:43:15
+annotation so this traceable what it
+1:43:20
+does I mean actually just paste it into chat gbt and ask it what traceable is doing it's essentially allowing you to
+1:43:27
+hook into this function and you know run code before and after this function and
+1:43:32
+and it's actually pretty cool it's uh it's it's but once I add at traceable at
+1:43:38
+traceable is a laying chain like laying Smith you know annotation they created so they have a function called
+1:43:44
+traceable and what it's going to do is it's going to allow me to follow the chain of calls so by adding traceable to
+1:43:50
+each of these function headers here now if I run this and I go
+1:43:57
+to Lang Smith go to my project elak code
+1:44:07
+ta and if I click
+1:44:14
+on this chat interaction I can see you know look for
+1:44:20
+every message they send the whole system prompt you know every single message is
+1:44:25
+like just says has your has your history with it then I say explain recursion then you said this and then I said great
+1:44:33
+I totally get it and then and then AI said this right but then if you look at the assess message it's kind of
+1:44:38
+interesting because the assess one actually has a bunch of calls so if you look at the latency
+1:44:47
+notice that a lot of latency is zero that's because there was no there was no llm call to those those are just like
+1:44:54
+you know plucking things outside out of the you know um out of the dictionaries
+1:45:01
+and whatever and then you can see the latencies for the actual calls to chat
+1:45:07
+gbt actually pretty slow 1.77 seconds 2.56 seconds 2.59 seconds you know and
+1:45:13
+so on so that's within the that's within
+1:45:20
+the assess message but that's what the traceable gave me so uh I can see that get latest user
+1:45:27
+message that is a that is a not a a chat jpt call it's a parsing call and so you
+1:45:34
+can kind of see what um what it looks
+1:45:41
+like okay so by the end of Milestone 2 uh whether you're with me now now or
+1:45:49
+slightly lagging behind or or ahead um you've accomplished a key thing for your
+1:45:56
+LM which is you you've given it visibility into all of the because in practice you're gonna be making a
+1:46:01
+million calls you're going to be chaining together a lot of stuff and so you're going to need to understand what was the flow of the calls and and what
+1:46:08
+was the interaction what did the llm respond with Oh okay that's cool or that's weird or that's
+1:46:14
+interesting now let's go to Milestone three which
+1:46:20
+is uh if you you know we created that first artificial Milestone like that
+1:46:27
+that's for you that's probably not how you're going to assemble data sets what you're going to do instead is you're
+1:46:33
+going to Tinker around with your tutor app or whatever and then I'm going to
+1:46:38
+say you know what this really represents so this one's I demand
+1:46:44
+to this one's the one where I demanded to talk to
+1:46:49
+SAA okay so I demand to talk to a professor I used to say I and then the
+1:46:55
+thing said okay cool I'm going to notify SAA Professor SAA that you want to chat
+1:47:00
+with them yes I like that I like your style I want to make sure that you hang on to that so I'm gonna add I'm gonna
+1:47:07
+click on this add to button and then add to data set here and then I will
+1:47:14
+create a new data set I'll call this you know leak
+1:47:21
+code tutoring
+1:47:26
+and then it's a chat it's a chat structure here and that's so that's the schema of that data set and then I'll
+1:47:34
+create it and so now I've captured what is a quality interaction or let's say that I
+1:47:41
+didn't quite like it it was in the gist of it but so then what I can do is I can edit it once it's in the data set and
+1:47:48
+change it to what I want it to ideally be and then now I have a
+1:47:53
+uh you know like that that that that Lima group had a thousand you know high quality answers now you if you do that
+1:48:00
+edit you have one one down 999 to go
+1:48:07
+um so in this one I have a data set and
+1:48:12
+now instead of using that built-in judge I want
+1:48:18
+to I want to I want to define a metrics that I like I'm going to call a metric
+1:48:24
+called prompt compliance this is the word that I invented right because I
+1:48:29
+gave it really Specific Instructions in the prompt and how to behave and what I'd like to do is I'm G to send the
+1:48:36
+whole prompt in and then I'm going to send the interaction I'm gonna send the history in and then I'm gonna I'm gonna
+1:48:43
+put into an llm and say hey read The Prompt then read the
+1:48:51
+interaction and tell me was the interaction did they comply with the prompt you know um or did they did they
+1:48:59
+let the you know student bully them into doing something that was against the
+1:49:05
+prompt so this set of code here actually this just
+1:49:12
+has the initial scaffold so I don't have the judge logic in here yet all I have right now is I have the scaffold for the
+1:49:20
+the evaluation so I have results is equal to evaluate and then data is equal
+1:49:27
+to uh the name python Touring that pulls the D the name data set from so this
+1:49:34
+name matters right it's it's it's an ID it needs to match with the Lang smth you know label data set and then it's going
+1:49:41
+to run my one and only evaluator which is the prompt compliance evaluator which means it's going to run this function
+1:49:48
+and then the expectation of the evaluator is that it's going to give me
+1:49:53
+what was you know in the data set and then I supposed to return I must return
+1:49:59
+these three keys the the the label of the metric which is the prompt compliance the score
+1:50:07
+and then the reason for why I gave it that score so your mission for this Milestone
+1:50:15
+is just to print out what ex what is an example. inputs and what is an example.
+1:50:21
+outputs um because all you know right now is that it's coming from Lang Smith
+1:50:27
+data set and you don't we don't really know the form that is going to come back
+1:50:33
+in and then um long story short is after you read that form you're going to
+1:50:39
+understand why this code looks so crazy because here I had to like basically
+1:50:44
+unpack the nested structure that was inside that data set and then package it
+1:50:51
+up into my string so that I can send it into the llm and ultimately get a rating
+1:50:58
+for the compliance so this is my alternative to using their built-in llm as a judge this
+1:51:05
+is now using my custom llm as a judge um where I'm making I'm manually calling
+1:51:11
+chat client. chat. completion. create which is the open ey AI API for invoking
+1:51:19
+something okay so I'll let you play with that lab you know in your own time um
+1:51:26
+let's let's actually let's actually come back together and we'll do we'll do a
+1:51:32
+wrap up um
+1:51:38
+so let's see here
+1:51:45
+slideshow okay so the individual project for this week uh is essentially it's a
+1:51:51
+very similar thing except that um now I want you to I
+1:51:57
+didn't provide much code I'd like you to look at the code in the pre-work look at
+1:52:02
+the code in the lab I mean don't necessarily copy it in wholesale right try to like try to start to start the
+1:52:10
+process of understanding the different like components U but we want you to be able to really be able to spin up these
+1:52:17
+uh little apps quickly where there are these little um you know llm apps um I gave you a few IDE
+1:52:23
+ideas for project ideas but you can use any that you
+1:52:29
+want um uh one of the apps that I have that
+1:52:35
+I've always wanted to build I'll pitch it to you all now in case you choose it for your group project app it's a it's a
+1:52:41
+special Language Coach app so it's a Language Coach app that's a little bit different from a lot of other Language Coach apps first of all I wanted to
+1:52:48
+message me kind of at various points throughout the day I just wanted to send me message once send me messages once in
+1:52:53
+a while like one thing about chats right now the way they work is it's kind of like they always put it on the user to
+1:53:00
+chat into them I want to flip the script and I want to say you know you chat with me sometimes right and if I don't
+1:53:07
+respond to you you know you can chat with me again um secondly I wanted to
+1:53:12
+help me pass the uh I want I want to learn Chinese forever for those you who
+1:53:17
+know Chinese there is a Chinese language standard called hsk where they kind group together all the characters and
+1:53:23
+tell you all the different like levels of of the thing and I want it to start
+1:53:29
+to uh package up that vocabulary and send it to me except that I wanted to
+1:53:34
+use realistic dialogue from movies and TV shows so that I get it used in the
+1:53:40
+context of movies and TV and then I want it to quiz me on it and
+1:53:46
+remember which ones I've mastered um so that it can use the anky
+1:53:53
+sped repetition um concept to quiz me on words if you know the space repetition
+1:54:00
+that you know it delay it does the right delays and quizzes you again if you get it right it quizzes you more frequently if you start to get it you know whatever
+1:54:06
+so anyway that's my hopefully quickish pitch for what a Language Coach looks like look what the app that you choose
+1:54:13
+for the project this week it doesn't matter it's really just that you can practice scaffolding this app you know
+1:54:19
+using laying uh Lang Smith Crea your evaluation defining what metrics are
+1:54:25
+important for you for your app and then actually there's this really cool deployment step which is now you can you
+1:54:32
+can you can now share with your friends you know the your little chain lit uh
+1:54:39
+website um and then you also have a Capstone Milestone where you do have to
+1:54:46
+meet with your group and you do have to you know have a discussion and and discuss your top favorite ideas now I
+1:54:53
+added a few optionals here but I really would have you strongly consider tackling at least this one expand data
+1:55:00
+set to to to 100 it's a very confidence boosting to think about like and start
+1:55:05
+to practice the muscle how do you generate data sets of larger size um because a lot of like you know you
+1:55:12
+creating good Solutions at the end of the day is about your ability to describe and create a uh and have a
+1:55:18
+methodology for creating a larger amount of good data
+1:55:24
+okay so that's the weekly project it's due Sunday at midnight um how do we get you in
+1:55:31
+projects great question so let me stop this and if anyone else has any questions I'm going to pull up uh
+1:55:40
+a link to share give me some quick feedback on
+1:55:46
+that on that on day one session was that you know how was that for you did you like the theory part was it kind of
+1:55:53
+boring um did you like the were you able to follow everything but things go too
+1:56:03
+quick lab was stressful yeah yeah the lab pacing um I think maybe it's
+1:56:08
+sometimes even better maybe you just follow along with me um but I did want you to be able
+1:56:15
+to I agree the pacing for the lab was was challenging
+1:56:28
+yeah yeah maybe maybe next time um if you choose to I'll have the lab up and
+1:56:33
+I'll be following it and maybe you can just like focus on the follow along and then only Tinker with it or do it on
+1:56:39
+your own if you feel kind of um confident enough to do it
+1:56:53
+installation ahead of time okay I agree noted the second one I'll have it
+1:57:00
+more polished for the um uh the second the second lab okay the
+1:57:08
+labs do not need a submission the labs were meant
+1:57:17
+to okay so uh can you go ahead and click on the survey there this will be our
+1:57:23
+last thing before we wrap up um yes please suggest edits the
+1:57:30
+hackmd uh great feedback I'm gonna go through everyone's feedback after I want you to get you out of here roughly on
+1:57:37
+time so click on that form and could you just fill it out roughly right now so basically this is where you'll indicate
+1:57:43
+whether you want to do a solo project or a group project and if you want to do a
+1:57:49
+group project I'm going to gather your preferences here and then I'm going to put you in groups um by
+1:57:58
+Tomorrow based on your preferences that way you can meet with each other ASAP so
+1:58:04
+that you can start the awesome ideation process uh and start to get some of your
+1:58:11
+app idea juices flowing yes Matt if you have I know you
+1:58:17
+have your two friends so uh yeah just just write down in there just remind me you know know who who they were so if
+1:58:23
+you know if you know folks in this class and just just write it and there's a space for you can where you can uh write
+1:58:29
+that in um but if you don't then just put in your preferences so just do that right
+1:58:35
+now just because I know that it's going to be tough to chase you down to fill up the survey later I just need this information ASAP so that I can it
+1:58:41
+actually takes me a little bit of time to process it put you into groups and then send out the assignments um so uh
+1:58:48
+go ahead and do that okay and then I'm I'm about to send you a recap email that has all the links
+1:58:55
+so um it will have a link to all of the
+1:59:01
+yeah the slide deck the two hack MDS the um and the other things uh I'll send the
+1:59:08
+recording in a subsequent email because it takes time for Zoom to process it and then YouTube to process it but I'm G to
+1:59:14
+add it to a playlist so that you'll have you could just bookmark the playlist and just expect it'll be added to the playlist after the
+1:59:20
+class okay we are off to the races as you can see we're going to move quickly here we're
+1:59:26
+gonna be very Hands-On you will understand why you will be able to achieve this Mastery in just these uh
+1:59:33
+brief six weeks so join that Discord um if you get stuck on any snippet if
+1:59:39
+you're having trouble processing any of the kind of provided code or if you're running to weird things send it into
+1:59:45
+send it in Discord we'll we'll slack about it during the week all right everyone I know it's late
+1:59:50
+for some thank you for coming I will see you on Discord and I'll see you next
+1:59:56
+Tuesday take care Everybody by thank you thank you thanks Tim
